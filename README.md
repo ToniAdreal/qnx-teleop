@@ -21,6 +21,14 @@ end-to-end budget.
       (golden vectors); host-side bridge + loopback end-to-end test
       against the responder's Linux host build. All green, verified in
       an isolated copy.
+- [x] **M2a (2026-11-08):** host-side codec hardening while M2 waits on
+      the myQNX step — deterministic cross-implementation fuzz
+      (seed 20261108): 128 random frames (1–16 joints, edge values
+      incl. 0 / -0.0 / ±π / 2^64-1 timestamps) encoded by the Python
+      reference codec, decoded + re-encoded byte-identically by the C
+      codec; 128 single-byte corruptions all rejected with CRC error;
+      16 bad-magic frames all rejected. All green, verified in an
+      isolated copy.
 - [ ] **M2:** myQNX account + SDP 8.0 via QNX Everywhere, QEMU target
       boot. **Blocked on a user step:** myQNX registration is
       email + password only (no Google SSO), so the user sets the
@@ -36,6 +44,10 @@ end-to-end budget.
   guarded by `#ifdef __QNX__`, Linux host build uses
   `clock_gettime(CLOCK_MONOTONIC)` for the same accounting.
 - `qnx/test_frame_main.c` — codec test main with golden vectors.
+- `qnx/fuzz_driver.c` — stdin/stdout driver for cross-implementation
+  fuzz: decodes hex frames, re-encodes, reports OK / MISMATCH / ERR.
+- `tests/test_frame_cross_fuzz.py` — seeded cross-fuzz (Python reference
+  codec vs C codec): 128 round-trips, 128 corruptions, 16 bad-magic.
 - `src/host_bridge.py` — stdlib-only Python bridge: sends frames, checks
   byte-identical echoes, reports RTT stats.
 - `tests/` — pytest suite (C codec + loopback end-to-end).
