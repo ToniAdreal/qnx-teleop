@@ -29,6 +29,14 @@ end-to-end budget.
       codec; 128 single-byte corruptions all rejected with CRC error;
       16 bad-magic frames all rejected. All green, verified in an
       isolated copy.
+- [x] **M2b (2026-11-09):** responder malformed-input resilience —
+      bad magic / bad version / joint-count 0 / joint-count 17 /
+      truncated frame / 10-client connect-and-close storm are each
+      dropped without echo, the listener stays alive through all of
+      them, and a fresh valid client still gets all 3 golden frames
+      echoed byte-identically. Suite now 8/8, verified in an isolated
+      clone. (Host build is the test vehicle; the same serve_client()
+      code ships to the QNX target.)
 - [ ] **M2:** myQNX account + SDP 8.0 via QNX Everywhere, QEMU target
       boot. **Blocked on a user step:** myQNX registration is
       email + password only (no Google SSO), so the user sets the
@@ -48,6 +56,9 @@ end-to-end budget.
   fuzz: decodes hex frames, re-encodes, reports OK / MISMATCH / ERR.
 - `tests/test_frame_cross_fuzz.py` — seeded cross-fuzz (Python reference
   codec vs C codec): 128 round-trips, 128 corruptions, 16 bad-magic.
+- `tests/test_responder_robustness.py` — malformed-input resilience:
+  abusive clients are dropped (FIN or RST, no echo) and the listener
+  keeps serving valid clients afterwards.
 - `src/host_bridge.py` — stdlib-only Python bridge: sends frames, checks
   byte-identical echoes, reports RTT stats.
 - `tests/` — pytest suite (C codec + loopback end-to-end).
