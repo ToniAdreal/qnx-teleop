@@ -41,6 +41,13 @@ end-to-end budget.
       boot. **Blocked on a user step:** myQNX registration is
       email + password only (no Google SSO), so the user sets the
       password once via Secure Vault; then the SDP download proceeds.
+      QEMU side done 2026-11-13: `qemu-system-x86_64` 8.2.2 installed
+      from Ubuntu noble-updates (the earlier `apt-get update` stall was
+      a dead second mirror, mirror.cogentco.com, since removed from
+      `ubuntu.sources`; the binary runs — `--version` prints 8.2.2 and
+      a no-boot smoke run executes until killed by timeout). No QNX
+      image exists yet, so no boot test is possible until SDP 8.0 is
+      downloaded.
 - [ ] **M3:** cross-compile with `qcc`, boot QNX 8.0 in QEMU, run the
       responder on the target, measure real service-time distribution.
 - [ ] **M4:** Devpost submission (public repo + <3 min demo video).
